@@ -11,15 +11,14 @@ public class Post {
     private long id;
 
     @Column(nullable = false, length = 100)
-    private String title;
+    String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String body;
+    String body;
 
-    public Post(String title, String description) {
-        this.title = title;
-        this.body = description;
-    }
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User owner;
 
     public long getId() {
         return id;
@@ -27,6 +26,9 @@ public class Post {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Post() {
     }
 
     public String getTitle() {
@@ -37,13 +39,20 @@ public class Post {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getBody() {
+        return body;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setBody(String body) {
+        this.body = body;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
 }
 

@@ -1,41 +1,41 @@
 package com.codeup.demo.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.codeup.demo.models.Post;
-import com.codeup.demo.repository.PostRepository;
+import com.codeup.demo.models.User;
+import com.codeup.demo.repositories.PostRepository;
+import com.codeup.demo.repositories.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-class PostController {
+public class PostController {
     private final PostRepository postRepo;
+    private final UserRepository userRepo;
 
-
-    public PostController(PostRepository postRepo) {
+    public PostController(PostRepository postRepo, UserRepository userRepo) {
         this.postRepo = postRepo;
+        this.userRepo = userRepo;
     }
 
     @GetMapping("/post")
-    public String index(Model model) {
-        List<Post> postList = new ArrayList<>();
-        postList.add(new Post("Second Post", "Testing posting another post"));
-        postList.add(new Post("Third Post", "Third post, auto-generated post"));
-        model.addAttribute("postList", postList);
-        return "post/index";
+    public String showPosts(Model model) {
+        List<Post> posts = postRepo.findAll();
+        model.addAttribute("posts", posts);
+        return "posts/index";
     }
 
-    @GetMapping("/post/{id}")
+    @GetMapping("/posts/{id}")
     public String showPost(@PathVariable Integer id, Model model) {
-        Post post = new Post("A Single Post", "This is the body of a single test post.");
+        Post post = postRepo.getPostById(id);
         model.addAttribute("post", post);
         return "posts/show";
     }
 
-    @GetMapping("/post/create")
+    @GetMapping("/posts/create")
     public String showCreatePost () {
         return "posts/create";
     }
@@ -44,23 +44,27 @@ class PostController {
     public String createPost(@RequestParam(name = "title") String title,
                              @RequestParam(name = "body") String body,
                              Model model) {
-        Post post = new Post(title, body);
+        List<User> users = userRepo.findAll();
+        Post post = new Post();
+        post.setTitle(title);
+        post.setBody(body);
+        if (!users.isEmpty()) post.setOwner(users.get(0));
         postRepo.save(post);
-        return "redirect:/posts/" + post.getId();
+        return "redirect:/ads/" + post.getId();
     }
 
     @GetMapping("/posts/delete/{id}")
-    public String deletePost(@PathVariable long id, Model model) {
+    public String deleteAd(@PathVariable long id, Model model) {
         Post post = postRepo.getPostById(id);
         postRepo.delete(post);
-        return "redirect:/posts";
+        return "redirect:/ads";
     }
 
     @GetMapping("/posts/edit/{id}")
     public String editAd(@PathVariable long id, Model model) {
         Post post = postRepo.getPostById(id);
         model.addAttribute("post", post);
-        return "posts/edit";
+        return "ads/edit";
     }
 
     @PostMapping("/posts/edit")
