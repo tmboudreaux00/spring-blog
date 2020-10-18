@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Log In</title>
+    <div th:replace="partials/links :: links"/>
+</head>
+<body>
+<header th:replace="partials/header :: header"/>
+<nav th:replace="partials/navbar :: navbar"/>
+<main class="container mt-3">
+    <h1>Log In</h1>
+    <!-- We can set parameters to inform us whether or not the user has logged out, entered incorrect credentials, etc -->
+
+    <div th:if="${param.error}">
+        <div id="danger-alert" class="alert alert-danger" role="alert" style="transition: all 0.5s ease-in-out; opacity: 1;">Invalid Username and/or Password.</div>
+    </div>
+    <div th:if="${param.logout}">
+        <div id="success-alert" class="alert alert-success" role="alert" style="transition: all 0.5s ease-in-out; opacity: 1;">You have been logged out.</div>
+    </div>
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input id="username" class="form-control" name="username" type="text" />
+            <label for="password">Password</label>
+            <input id="password" class="form-control" name="password" type="password" />
+        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
+
+    </form>
+</main>
+<footer th:replace="partials/footer :: footer"/>
+<div th:replace="partials/scripts :: scripts"/>
+<script type="text/javascript">
+    (document.addEventListener('DOMContentLoaded', function() {
+        // if the alert is visible, let's make it fade away after 3 seconds
+        setTimeout(function () {
+            if( null != document.getElementById("danger-alert")) {
+                document.getElementById("danger-alert").style.opacity = '0';
+                setTimeout(function() {
+                    document.getElementById("danger-alert").style.display = 'none';
+                }, 500);
+            }
+            if( null != document.getElementById("success-alert")) {
+                document.getElementById("success-alert").style.opacity = '0';
+                setTimeout(function () {
+                    document.getElementById("success-alert").style.display = 'none';
+                }, 500);
+            }
+        }, 3000);
+    }));
+</script>
+</body>
+</html>

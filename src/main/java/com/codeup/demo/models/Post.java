@@ -1,5 +1,7 @@
 package com.codeup.demo.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,14 +13,25 @@ public class Post {
     private long id;
 
     @Column(nullable = false, length = 100)
-    String title;
+    private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    String body;
+    private String body;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private User owner;
+    @JsonManagedReference
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Post() {
+    }
+
+    public Post(long id, String title, String body, User user) {
+        this.id = id;
+        this.title = title;
+        this.body = body;
+        this.user = user;
+    }
 
     public long getId() {
         return id;
@@ -26,9 +39,6 @@ public class Post {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Post() {
     }
 
     public String getTitle() {
@@ -47,12 +57,11 @@ public class Post {
         this.body = body;
     }
 
-    public User getOwner() {
-        return owner;
+    public User getUser() {
+        return user;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
-
